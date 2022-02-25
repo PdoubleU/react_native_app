@@ -1,0 +1,14 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "local host for axios server",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "PdoubleU",
+  "license": "ISC",
+  "dependencies": {
+    "graphql-yoga": "^1.18.3"
+  }
+}
