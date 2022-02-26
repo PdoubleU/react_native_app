@@ -15,7 +15,7 @@ const ChatComponent: React.FC<ChatComponentProps> = () => {
             <Message user={user}></Message>
             <TextInput
                 value={user}
-                onChangeText={setUser}
+                onChangeText={input => setUser(input)}
             ></TextInput>
         </ApolloClient>
     );

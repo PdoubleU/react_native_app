@@ -1,7 +1,7 @@
 import { View, Text, TextInput } from "react-native";
 import { GET_MESSAGES, POST_MESSAGE } from "./ApolloClient";
 import { useQuery, useMutation, useSubscription } from "@apollo/client";
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback, useEffect, useLayoutEffect } from 'react'
 import { GiftedChat } from 'react-native-gifted-chat'
 
 interface MessageProps {
@@ -23,15 +23,12 @@ const Message: React.FC<MessageProps> = ( { user }) => {
     const [messages, setMessages] = useState<MessageType[]>([]);
     const [ postMessage ] = useMutation(POST_MESSAGE);
     const { data } = useSubscription(GET_MESSAGES);
-    console.log(user);
-    console.log(typeof user);
 
-
-    useEffect(() => {
+    useLayoutEffect(() => {
         if(data && data.messages)
         {
-            let { messages: messagesAmessage } = data;
-            setMessages([...messagesAmessage])
+            let { messages: { data: setOfMsgs} } = data;
+            setMessages([...setOfMsgs]);
         }
     }, [data])
 
@@ -40,21 +37,18 @@ const Message: React.FC<MessageProps> = ( { user }) => {
           postMessage({
                 variables: {
                     user: user,
-                    text: "test"
+                    text: messages[0].text
                 }
-          })
+          });
+          setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
       }
-      setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
-    }, [])
-
-    if (!data) {
-        return null;
-    }
+    }, [user])
 
     return (
         <>
             <GiftedChat
                 messages={messages}
+                inverted={false}
                 onSend={messages => onSend(messages)}
                 user={{
                     _id: user,
